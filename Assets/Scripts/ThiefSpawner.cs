@@ -3,11 +3,11 @@ using UnityEngine;
 public class ThiefSpawner : MonoBehaviour
 {
     [SerializeField] private Thief _thiefPrefab;
-    [SerializeField] private ThiefTargetPoint _thiefTargetPoint;
+    [SerializeField] private ThiefTargetPoint[] _thiefTargetPoints;
 
     [SerializeField, Min(0)] private float _minThiefMoveSpeed;
     [SerializeField, Min(0)] private float _maxThiefMoveSpeed;
-    [SerializeField] private int _amountOfThieves;
+    [SerializeField, Min(0)] private int _amountOfThieves;
 
     private void Start()
     {
@@ -15,10 +15,9 @@ public class ThiefSpawner : MonoBehaviour
         {
             float thiefMoveSpeed = Random.Range(_minThiefMoveSpeed, _maxThiefMoveSpeed);
 
-            var thief = Instantiate(_thiefPrefab);
+            Thief thief = Instantiate(_thiefPrefab, transform.position, Quaternion.identity);
             
-            thief.Initialize(_thiefTargetPoint.transform.position, transform.position, thiefMoveSpeed);
-            thief.transform.position = transform.position;
+            thief.Initialize(_thiefTargetPoints, thiefMoveSpeed);
         }
     }
 

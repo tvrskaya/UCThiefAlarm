@@ -2,19 +2,10 @@ using UnityEngine;
 
 public class Thief : MonoBehaviour
 {
-    private Vector3 _targetPoint;
-    private Vector3 _returnPoint;
-    private Vector3 _currentTargetPoint;
+    private ThiefTargetPoint[] _movePoints;
+    private int _currentPointIndex;
 
     private float _moveSpeed;
-
-    public void Initialize(Vector3 targetPoint, Vector3 returnPoint, float moveSpeed)
-    {
-        _targetPoint = targetPoint;
-        _currentTargetPoint = targetPoint;
-        _returnPoint = returnPoint;
-        _moveSpeed = moveSpeed;
-    }
 
     private void Update()
     {
@@ -22,18 +13,25 @@ public class Thief : MonoBehaviour
         Move();
     }
 
+    public void Initialize(ThiefTargetPoint[] movePoints, float moveSpeed)
+    {
+        _movePoints = movePoints;
+        _moveSpeed = moveSpeed;
+    }
+
     private void Move()
     {
         transform.position = Vector3.MoveTowards(transform.position,
-                                                _currentTargetPoint,
+                                                _movePoints[_currentPointIndex].transform.position,
                                                 _moveSpeed * Time.deltaTime);
     }
-    
+
     private void UpdateCurrentTargetPoint()
     {
-        if (transform.position == _targetPoint)
-            _currentTargetPoint = _returnPoint;
-        else if (transform.position == _returnPoint)
-            _currentTargetPoint = _targetPoint;
+        if (transform.position == _movePoints[_currentPointIndex].transform.position)
+        {
+            ++_currentPointIndex;
+            _currentPointIndex %= _movePoints.Length;
+        }
     }
 }

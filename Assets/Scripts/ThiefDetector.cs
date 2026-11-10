@@ -1,29 +1,20 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ThiefDetector : MonoBehaviour
 {
-    private HashSet<Thief> _thieves = new HashSet<Thief>();
+    public event Action ThiefEntered;
+    public event Action ThiefExited; 
 
-    public event Action<int> ThiefEnter;
-    public event Action<int> ThiefExit; 
-
-    private void OnTriggerEnter(Collider collider)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collider.TryGetComponent<Thief>(out var thief) && _thieves.Contains(thief) == false)
-        {
-            _thieves.Add(thief);
-            ThiefEnter?.Invoke(_thieves.Count);
-        }
+        if (other.TryGetComponent<Thief>(out _))
+            ThiefEntered?.Invoke();
     }
     
-    private void OnTriggerExit(Collider collider)
+    private void OnTriggerExit(Collider other)
     {
-        if (collider.TryGetComponent<Thief>(out var thief))
-        {
-            _thieves.Remove(thief);
-            ThiefExit?.Invoke(_thieves.Count);
-        }
+        if (other.TryGetComponent<Thief>(out _))
+            ThiefExited?.Invoke();
     }
 }
